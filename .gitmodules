@@ -1,4 +1,4 @@
 [submodule "pilight"]
 	path = pilight
 	url = https://github.com/wo-rasp/pilight
-	branch = oregon_21
+	branch = test_dev

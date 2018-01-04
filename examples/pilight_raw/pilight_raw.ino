@@ -1,5 +1,7 @@
 /*
- Basic ESPiLight receive raw (pulse train) signal example
+ Basic ESPiLight pilight_raw example
+
+ This example mimic the output of the piligh_raw tool.
 
  https://github.com/puuu/espilight
 */
@@ -12,20 +14,16 @@
 ESPiLight rf(TRANSMITTER_PIN);  // use -1 to disable transmitter
 
 // callback function. It is called on successfully received and parsed rc signal
-void rfRawCallback(const uint16_t* codes, size_t length) {
-  // print pulse lengths
-  Serial.print("RAW signal: ");
+void rfRawCallback(const uint16_t* pulses, size_t length) {
+  Serial.print("ESPiLight:");
   for (unsigned int i = 0; i < length; i++) {
-    Serial.print(codes[i]);
-    Serial.print(' ');
+    Serial.print(" ");
+    Serial.print(pulses[i]);
+    if (pulses[i] > 5100) {
+      Serial.printf(" -# ");
+      Serial.println(i);
+    }
   }
-  Serial.println();
-
-  // format of pilight USB Nano
-  String data = rf.pulseTrainToString(codes, length);
-  Serial.print("string format: ");
-  Serial.print(data);
-  Serial.println();
 }
 
 void setup() {

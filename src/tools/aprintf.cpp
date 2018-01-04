@@ -16,24 +16,45 @@
   along with library. If not, see <http://www.gnu.org/licenses/>
 */
 
-#include <Arduino.h>
 #include "aprintf.h"
+#include <Esp.h>
 
-#ifdef PILIGHT_PRINT
+static Print *aprintf_print = nullptr;
 
-#define BUFFER_SIZE 32
+void set_aprintf_output(Print *output) { aprintf_print = output; }
 
-int aprintf(const char *format, ...) {
-  char buffer[BUFFER_SIZE] = {0};
-  va_list args;
-  va_start(args, format);
-  vsnprintf(buffer, BUFFER_SIZE, format, args);
-  va_end(args);
-  PILIGHT_PRINT.print(buffer);
+int aprintf_P(PGM_P formatP, ...) {
+  if (aprintf_print == nullptr) {
+    return 0;
+  }
+  va_list arg;
+  va_start(arg, formatP);
+  char temp[64];
+  char *buffer = temp;
+  size_t len = vsnprintf_P(temp, sizeof(temp), formatP, arg);
+  va_end(arg);
+  if (len > sizeof(temp) - 1) {
+    buffer = new char[len + 1];
+    if (!buffer) {
+      return 0;
+    }
+    va_start(arg, formatP);
+    vsnprintf_P(buffer, len + 1, formatP, arg);
+    va_end(arg);
+  }
+  len = aprintf_print->write((const uint8_t *)buffer, len);
+  if (buffer != temp) {
+    delete[] buffer;
+  }
+  return len;
 }
 
 void exit(int n) {
+  if (aprintf_print != nullptr) {
+    aprintf_print->print(F("EXIT: "));
+    aprintf_print->println(n);
+  }
   ESP.restart();
+  while (true)
+    ;
 }
-
-#endif

@@ -19,29 +19,26 @@
 #ifndef _APRINTF_H_
 #define _APRINTF_H_
 
-#define PILIGHT_PRINT Serial
+#include <pgmspace.h>
 
-#ifdef PILIGHT_PRINT
-  #define printf(args...) aprintf(args)
-  #define fprintf(stream, args...) aprintf(args)
-    #ifdef __cplusplus
-      extern "C" {
-    #endif
-    int aprintf(const char *format, ...);
-    #ifdef __cplusplus
-      }
-    #endif
-#else
-    #define printf(format, ...)
-    #define fprintf(stream, format, ...)
+#ifndef __cplusplus
+#include <stdio.h>
+#define fprintf(stream, fmt, ...) aprintf_P(PSTR(fmt), ##__VA_ARGS__)
+#define printf(fmt, ...) aprintf_P(PSTR(fmt), ##__VA_ARGS__)
 #endif
 
 #ifdef __cplusplus
-  extern "C" {
+#include <Print.h>
+void set_aprintf_output(Print *output);
+#endif
+
+#ifdef __cplusplus
+extern "C" {
 #endif
 void exit(int n);
+int aprintf_P(PGM_P formatP, ...) __attribute__((format(printf, 1, 2)));
 #ifdef __cplusplus
-  }
+}
 #endif
 
-#endif //_APRINTF_H_
+#endif  //_APRINTF_H_

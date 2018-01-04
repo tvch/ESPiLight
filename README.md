@@ -44,10 +44,17 @@ information can be found here:
 ## Contributing
 
 If you find any bug, feel free to open an issue at github.  Also, pull
-requests are welcome. The development takes place in the `matser`
+requests are welcome. The development takes place in the `master`
 branch. The `release` is used to integrate the pilight files and for
 version tagging, like necessary for the Arduino Library Manager
 crawler.
+
+To prevent formating issues, please make sure that your code is proper
+formatted. We use the `clang-format` tool with the `Google` style.
+You can just format the code by calling
+```console
+$ clang-format -style=Google -i <source-file>
+```
 
 
 ### Install from source
@@ -75,12 +82,29 @@ $ make update
 ```
 
 
+#### New protocols
+
+ESPiLight only supports the 434MHz protocols supported by
+[pilight](https://pilight.org/). If you are missing any protocol,
+please report it directly to pilight. After the intergratrion into
+pilight it can be merged into ESPILight.
+
+To report new protocols, please folow the
+[rules](https://forum.pilight.org/showthread.php?tid=761) of the
+[pilight forum](https://forum.pilight.org/). It is recommended to use
+pilight directly. Alternativly, ESPiLight offers the
+[`pilight_debug`](examples/pilight_debug/pilight_debug.ino) and
+[`pilight_raw`](examples/pilight_raw/pilight_raw.ino) examples that
+mimic tht pilight counterparts.
+
+
 ## Acknowledgement
 
 Big thanks goes to the pilight community, which implemented all the
 434MHz protocols. If you want to integrate more protocols, please
 contribute directly to [pilight](https://pilight.org/).
 
+[@janLo](https://github.com/janLo) [contributed](https://github.com/puuu/ESPiLight/graphs/contributors) some major cleanups and new functionalities to the library.
 
 ## Other similar projects
 
